@@ -1,10 +1,7 @@
-import webbrowser
 from playwright.sync_api import *
-import pywhatkit as pwk, time as tm
-from datetime import datetime as dtm
+import time as tm
 from urllib.parse import quote as q
-import webbrowser as web
-from webbrowser import open
+import webbrowser
 import datetime
 import pyautogui as pg
 
