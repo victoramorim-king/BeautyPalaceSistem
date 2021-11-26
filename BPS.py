@@ -69,16 +69,17 @@ tm.sleep(2)
 for c in range(len(d[1])):
     m = d[0][d[1][c]]['servico']
     tel = d[0][d[1][c]]['tel']
-    url = f'https://web.whatsapp.com/send?phone=+55{"11982153054"}&text={q(m)}%0A%0A{q("❓Posso confirmar o seu horário❓")}%0A%0a{q("Caso não consiga comparecer no atendimento, peço que desmarque com no mínimo 2 horas de antecedência para que possamos encaixar outra cliente no horário. Caso haja falta sem um aviso prévio, será aplicada uma multa com o valor de 50% referente ao(s) serviço(s) que seria prestado.")}'
-    pg.hotkey('ctrl', 'l')
-    tm.sleep(4)
-    pg.write(url)
-    pg.press('enter')
-    tm.sleep(10)
-    pg.press('enter')
-    tm.sleep(10)
-    pg.press('enter')
-    tm.sleep(3)
+    if len(tel) == 11:
+        url = f'https://web.whatsapp.com/send?phone=+55{"11982153054"}&text={q(m)}%0A%0A{q("❓Posso confirmar o seu horário❓")}%0A%0a{q("Caso não consiga comparecer no atendimento, peço que desmarque com no mínimo 2 horas de antecedência para que possamos encaixar outra cliente no horário. Caso haja falta sem um aviso prévio, será aplicada uma multa com o valor de 50% referente ao(s) serviço(s) que seria prestado.")}'
+        pg.hotkey('ctrl', 'l')
+        tm.sleep(4)
+        pg.write(url)
+        pg.press('enter')
+        tm.sleep(10)
+        pg.press('enter')
+        tm.sleep(10)
+        pg.press('enter')
+        tm.sleep(3)
 pg.hotkey('ctrl', 'w')
 tm.sleep()
 
