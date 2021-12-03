@@ -29,59 +29,70 @@ def get_avec_schedule(which_day=0):
         except:
             print('appointments not found')
             exit('appointments not found')
-        # organizando as clientes e serviços em dicionário para poder trabalhar com as informações
-        clientes = {}
-        nomes = []
-        for index in range(len(response_dados)):
-            reserva = response_dados[index]['reservas']
-            for t in range(len(reserva)):
-                if reserva[t]['cliente_nome'] in clientes.keys():
-                    clientes[reserva[t]['cliente_nome']]['servico'].append(reserva[t]['servico'])
-                    if int(reserva[t]['hora_inicio']) < int(clientes[reserva[t]['cliente_nome']]['horario']):
-                        clientes[reserva[t]['cliente_nome']]['horario'] = reserva[t]['hora_inicio']
-                else:
-                    nomes.append(reserva[t]['cliente_nome'])
-                    clientes[reserva[t]['cliente_nome']] = {
-                        'tel': reserva[t]['cliente_tel'],
-                        'servico': [reserva[t]['servico']],
-                        'horario': int(reserva[t]['hora_inicio'])}
-                print(clientes[reserva[t]['cliente_nome']])
-        for o in range(len(nomes)):
-            servico = ''
-            for x in range(len(clientes[nomes[o]]['servico'])):
-                servico = servico + ' ' + clientes[nomes[o]]['servico'][x] +','
-            amanha = datetime.date.today() + datetime.timedelta(days=1)
-            amanha = amanha.strftime(f'%d/%m/%Y')
-            servico = f'👑Olá princesa, lembrete de agendamento no Beauty Palace para o dia {amanha} ás {str(datetime.timedelta(minutes=int(clientes[nomes[o]]["horario"])))}👑'
-            servico2 = '❓Posso confirmar o seu horário❓'
-            servico3 = 'Caso não consiga comparecer no atendimento, peço que desmarque com no mínimo 2 horas de antecedência para que possamos encaixar outra cliente no horário. Caso haja falta sem um aviso prévio, será aplicada uma multa com o valor de 50% referente ao(s) serviço(s) que seria prestado.'
-            clientes[nomes[o]]['servico'] = servico
+    return response_dados
+
+response_dados = get_avec_schedule(1)
+
+def processandoResponse(response_dados):
+    # organizando as clientes e serviços em dicionário para poder trabalhar com as informações
+    clientes = {}
+    nomes = []
+    for index in range(len(response_dados)):
+        reserva = response_dados[index]['reservas']
+        for t in range(len(reserva)):
+            if reserva[t]['cliente_nome'] in clientes.keys():
+                clientes[reserva[t]['cliente_nome']]['servico'].append(reserva[t]['servico'])
+                if int(reserva[t]['hora_inicio']) < int(clientes[reserva[t]['cliente_nome']]['horario']):
+                    clientes[reserva[t]['cliente_nome']]['horario'] = reserva[t]['hora_inicio']
+            else:
+                nomes.append(reserva[t]['cliente_nome'])
+                clientes[reserva[t]['cliente_nome']] = {
+                    'tel': reserva[t]['cliente_tel'],
+                    'servico': [reserva[t]['servico']],
+                    'horario': int(reserva[t]['hora_inicio'])}
+            print(clientes[reserva[t]['cliente_nome']])
+    for o in range(len(nomes)):
+        servico = ''
+        for x in range(len(clientes[nomes[o]]['servico'])):
+            servico = servico + ' ' + clientes[nomes[o]]['servico'][x] +','
+        amanha = datetime.date.today() + datetime.timedelta(days=1)
+        amanha = amanha.strftime(f'%d/%m/%Y')
+        servico = f'👑Olá princesa, lembrete de agendamento no Beauty Palace para o dia {amanha} ás {str(datetime.timedelta(minutes=int(clientes[nomes[o]]["horario"])))}👑'
+        servico2 = '❓Posso confirmar o seu horário❓'
+        servico3 = 'Caso não consiga comparecer no atendimento, peço que desmarque com no mínimo 2 horas de antecedência para que possamos encaixar outra cliente no horário. Caso haja falta sem um aviso prévio, será aplicada uma multa com o valor de 50% referente ao(s) serviço(s) que seria prestado.'
+        clientes[nomes[o]]['servico'] = servico
     d = [clientes, nomes]
     tel = '+5511982153054'
     return d
 
-d = get_avec_schedule(1)
+d = processandoResponse(response_dados)
 
+def notificarProfissional():
+    print('notificando profissional responsavel')
+    # luh_chat = f'https://web.whatsapp.com/send?phone=+5511982153054&text={q("O Beauty Palace Sistem começou a enviar os lembretes para as clientes")}'
+    # webbrowser.open(luh_chat, new=0, autoraise=True)
+    # tm.sleep(20)
+    # pg.press('enter')
+    # tm.sleep(2)
 
-luh_chat = f'https://web.whatsapp.com/send?phone=+5511982153054&text={q("O Beauty Palace Sistem começou a enviar os lembretes para as clientes")}'
-webbrowser.open(luh_chat, new=0, autoraise=True)
-tm.sleep(20)
-pg.press('enter')
-tm.sleep(2)
-for c in range(len(d[1])):
-    m = d[0][d[1][c]]['servico']
-    tel = d[0][d[1][c]]['tel']
-    if len(tel) == 11 and tel != "":
-        url = f'https://web.whatsapp.com/send?phone=+55{tel}&text={q(m)}%0A%0A{q("❓Posso confirmar o seu horário❓")}%0A%0a{q("Caso não consiga comparecer no atendimento, peço que desmarque com no mínimo 2 horas de antecedência para que possamos encaixar outra cliente no horário. Caso haja falta sem um aviso prévio, será aplicada uma multa com o valor de 50% referente ao(s) serviço(s) que seria prestado. ** mensagem automatica")}'
-        pg.hotkey('ctrl', 'l')
-        tm.sleep(4)
-        pg.write(url)
-        pg.press('enter')
-        tm.sleep(15)
-        pg.press('enter')
-        tm.sleep(10)
-        pg.press('enter')
-        tm.sleep(3)
-pg.hotkey('ctrl', 'w')
+def enviarMensagens(d):
+    notificarProfissional()
+    for c in range(len(d[1])):
+        m = d[0][d[1][c]]['servico']
+        tel = d[0][d[1][c]]['tel']
+        if len(tel) == 11 and tel != "":
+            print(m)
+            print(tel)
+    #         url = f'https://web.whatsapp.com/send?phone=+55{tel}&text={q(m)}%0A%0A{q("❓Posso confirmar o seu horário❓")}%0A%0a{q("Caso não consiga comparecer no atendimento, peço que desmarque com no mínimo 2 horas de antecedência para que possamos encaixar outra cliente no horário. Caso haja falta sem um aviso prévio, será aplicada uma multa com o valor de 50% referente ao(s) serviço(s) que seria prestado. ** mensagem automatica")}'
+    #         pg.hotkey('ctrl', 'l')
+    #         tm.sleep(4)
+    #         pg.write(url)
+    #         pg.press('enter')
+    #         tm.sleep(15)
+    #         pg.press('enter')
+    #         tm.sleep(10)
+    #         pg.press('enter')
+    #         tm.sleep(3)
+    # pg.hotkey('ctrl', 'w')
 
-
+enviarMensagens(d)
