@@ -7,12 +7,14 @@ import pyautogui as pg
 
 def get_avec_schedule(which_day=0):
     #pegando os dados da agenda p montar os lembretes
+    user = 'email@email.com.br'
+    password = '123456'
     with sync_playwright() as p:
         browser = p.firefox.launch(headless=True)
         page = browser.new_page()
         page.goto("https://admin.salaovip.com.br/beautypalace/admin")
-        page.fill('//*[@id="formEmail"]', 'mannaramos54@gmail.com')
-        page.fill('//*[@id="formSenha"]', '06052001')
+        page.fill('//*[@id="formEmail"]', user)
+        page.fill('//*[@id="formSenha"]', password)
         page.click('text="Entrar"')
         print('successfully logged in')
         tm.sleep(3)
